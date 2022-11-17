@@ -28,8 +28,7 @@ from math import log10
 from pkg_resources import resource_filename
 from copy import deepcopy
 
-from .utils import (str2bytes, bytes2str, strjoin, EPICS_STR_ENCODING,
-                    clib_search_path)
+from .utils import (str2bytes, bytes2str, strjoin, clib_search_path)
 
 # legacy imports in case someone was importing them from here..
 from .utils import (STR2BYTES, BYTES2STR, NULLCHAR_2, memcopy, is_string,
@@ -1674,7 +1673,7 @@ def put(chid, value, wait=False, timeout=30, callback=None,
 
     # if needed convert to basic string/bytes git stform
     if isinstance(value, str):
-        value = bytes(value, EPICS_STR_ENCODING)
+        value = str2bytes(value)
 
     data = (count*dbr.Map[ftype])()
     if ftype == dbr.STRING:
@@ -1682,7 +1681,7 @@ def put(chid, value, wait=False, timeout=30, callback=None,
             data[0].value = value
         else:
             for elem in range(min(count, len(value))):
-                data[elem].value = bytes(str(value[elem]), EPICS_STR_ENCODING)
+                data[elem].value = str2bytes(str(value[elem]))
     elif nativecount == 1:
         if ftype == dbr.CHAR:
             if isinstance(value, (str, bytes)):
