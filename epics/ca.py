@@ -1681,7 +1681,10 @@ def put(chid, value, wait=False, timeout=30, callback=None,
             data[0].value = value
         else:
             for elem in range(min(count, len(value))):
-                data[elem].value = str2bytes(str(value[elem]))
+                if isinstance(value[elem], bytes):
+                    data[elem].value = value[elem]
+                else:
+                    data[elem].value = str2bytes(str(value[elem]))
     elif nativecount == 1:
         if ftype == dbr.CHAR:
             if isinstance(value, (str, bytes)):
