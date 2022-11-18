@@ -4,20 +4,23 @@ String and data utils
 import sys
 import os
 
-EPICS_STR_ENCODING = os.environ.get('PYTHONIOENCODING', 'utf-8')
+EPICS_STR_FALLBACK_ENCODING = os.environ.get('PYEPICS_FALLBACK_ENCODING', 'latin1')
 
 def str2bytes(st1):
     'string to byte conversion'
     if isinstance(st1, bytes):
         return st1
-    return bytes(st1, EPICS_STR_ENCODING)
+    return bytes(st1, 'utf-8')
 
 def bytes2str(st1):
     'byte to string conversion'
     if isinstance(st1, str):
         return st1
     elif isinstance(st1, bytes):
-        return str(st1, EPICS_STR_ENCODING)
+        try:
+            return str(st1, 'utf-8')
+        except UnicodeDecodeError:
+            return str(st1, EPICS_STR_FALLBACK_ENCODING)
     else:
         return str(st1)
 
